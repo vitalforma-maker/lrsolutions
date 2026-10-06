@@ -22,7 +22,7 @@ interface Props {
 const { title, description, fil, jsonLd = [], noindex = false } = Astro.props;
 
 const chemin = Astro.url.pathname.replace(/\.html$/, "").replace(/\/index$/, "").replace(/(.)\/$/, "$1") || "/";
-const base = Astro.site ?? new URL("https://lr-solutions.vercel.app");
+const base = Astro.site ?? new URL("https://lrsolutions.vercel.app");
 const canonical = new URL(chemin, base).href;
 const ogImage = new URL("/og-image.jpg", base).href;
 const logoUrl = new URL("/logo-lr-solutions.png", base).href;

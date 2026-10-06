@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // URL de production : à définir dans la variable d'environnement SITE_URL
 // (ex. https://lrsolutions-recouvrement.fr) une fois le domaine acheté.
-const site = process.env.SITE_URL || "https://lr-solutions.vercel.app";
+const site = process.env.SITE_URL || "https://lrsolutions.vercel.app";
 
 export default defineConfig({
   site,
