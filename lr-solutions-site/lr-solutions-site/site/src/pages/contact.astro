@@ -1,0 +1,115 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import ContactForm from "../components/ContactForm.astro";
+import Icon from "../components/Icon.astro";
+import Todo from "../components/Todo.astro";
+import { site, telHref, mailHref, hideTodos } from "../data/site";
+
+const fil = [{ nom: "Contact", url: "/contact" }];
+const valider = site.delaiReponseAValider ? " [À VALIDER]" : "";
+---
+
+<BaseLayout
+  title="Déposer un impayé · LR Solutions"
+  description="Décrivez votre situation en 2 minutes : réponse rapide et première analyse sans engagement. Téléphone, formulaire ou Instagram."
+  fil={fil}
+>
+  <PageHeader titre="Parlons de vos impayés" fil={fil}>
+    <p class="chapo mt-6 text-lg md:text-xl">
+      Décrivez-moi votre situation en quelques lignes. Je reviens vers vous {site.delaiReponse}<Todo text={valider} /> avec une première analyse, sans engagement.
+    </p>
+  </PageHeader>
+
+  <section class="bg-creme-50 py-12 md:py-16 lg:py-20">
+    <div class="container-site grid gap-8 lg:grid-cols-[1.45fr_0.85fr] lg:items-start lg:gap-10">
+      <ContactForm />
+
+      <aside id="coordonnees" class="flex flex-col gap-5 lg:sticky lg:top-28" aria-label="Coordonnées">
+        <div class="on-dark rounded-[24px] bg-vert-900 p-6 text-creme-50 sm:p-8">
+          <h2 class="font-titre text-sm font-semibold tracking-[0.2em] !text-or-300 uppercase">Me joindre directement</h2>
+          <ul class="mt-6 space-y-5">
+            {
+              (telHref || !hideTodos) && (
+                <li class="flex items-start gap-4">
+                  <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-vert-700 text-or-300">
+                    <Icon name="phone" size={20} />
+                  </span>
+                  <div>
+                    <p class="text-sm text-creme-50/75">Téléphone</p>
+                    {telHref ? (
+                      <a href={telHref} class="font-titre text-lg font-semibold hover:text-or-300">
+                        {site.telephone}
+                      </a>
+                    ) : (
+                      <Todo text={site.telephone} />
+                    )}
+                  </div>
+                </li>
+              )
+            }
+            {
+              (mailHref || !hideTodos) && (
+                <li class="flex items-start gap-4">
+                  <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-vert-700 text-or-300">
+                    <Icon name="mail" size={20} />
+                  </span>
+                  <div class="min-w-0">
+                    <p class="text-sm text-creme-50/75">E-mail</p>
+                    {mailHref ? (
+                      <a href={mailHref} class="font-titre font-semibold break-all hover:text-or-300">
+                        {site.email}
+                      </a>
+                    ) : (
+                      <Todo text={site.email} />
+                    )}
+                  </div>
+                </li>
+              )
+            }
+            <li class="flex items-start gap-4">
+              <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-vert-700 text-or-300">
+                <Icon name="map-pin" size={20} />
+              </span>
+              <div>
+                <p class="text-sm text-creme-50/75">Zone d'intervention</p>
+                <p class="font-titre font-semibold">{site.zone}</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-vert-700 text-or-300">
+                <Icon name="clock" size={20} />
+              </span>
+              <div>
+                <p class="text-sm text-creme-50/75">Délai de réponse</p>
+                <p class="font-titre font-semibold">
+                  {site.delaiReponse.charAt(0).toUpperCase() + site.delaiReponse.slice(1)}<Todo text={valider} />
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <a
+          href={site.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex items-center gap-5 rounded-[24px] border border-or-500/40 bg-white p-6 shadow-carte transition-shadow hover:shadow-[var(--shadow-carte-hover)]"
+        >
+          <span class="flex shrink-0 items-center border-r border-or-500/50 pr-5 text-vert-900">
+            <Icon name="message" size={40} strokeWidth={1.25} />
+          </span>
+          <span>
+            <span class="block font-titre font-bold text-vert-900">Un impayé ?</span>
+            <span class="block text-texte">Écrivez <strong class="text-or-700">« IMPAYÉ »</strong> en message privé.</span>
+            <span class="mt-1 inline-flex items-center gap-1.5 text-sm text-texte-doux group-hover:text-vert-900">
+              <Icon name="instagram" size={16} />
+              {site.instagramHandle}
+              <span class="sr-only">(Instagram, nouvel onglet)</span>
+            </span>
+          </span>
+        </a>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

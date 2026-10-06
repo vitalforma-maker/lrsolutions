@@ -1,0 +1,50 @@
+---
+/**
+ * Photo du site : version HD si présente, sinon aperçu basse définition
+ * légèrement flouté (jamais affiché net en grand) — le parent ajoute le voile/dégradé.
+ */
+import { Image } from "astro:assets";
+import { getPhoto, type NomPhoto } from "../lib/photos";
+
+interface Props {
+  nom: NomPhoto;
+  class?: string;
+  sizes?: string;
+  eager?: boolean;
+  /** Image purement décorative (alt vide) */
+  decorative?: boolean;
+  /** Flou appliqué à l'aperçu basse définition (px) */
+  flouApercu?: number;
+}
+
+const { nom, class: className, sizes = "(min-width: 1024px) 50vw, 100vw", eager = false, decorative = false, flouApercu = 3 } = Astro.props;
+const photo = getPhoto(nom);
+const alt = decorative ? "" : (photo?.alt ?? "");
+---
+
+{
+  photo &&
+    (photo.apercu ? (
+      <Image
+        src={photo.src}
+        alt={alt}
+        width={photo.src.width}
+        height={photo.src.height}
+        loading={eager ? "eager" : "lazy"}
+        fetchpriority={eager ? "high" : undefined}
+        class:list={["photo-apercu object-cover", className]}
+        style={`filter: blur(${flouApercu}px) saturate(0.95); transform: scale(1.08);`}
+        data-apercu
+      />
+    ) : (
+      <Image
+        src={photo.src}
+        alt={alt}
+        widths={[480, 768, 1024, 1440].filter((w) => w <= photo.src.width)}
+        sizes={sizes}
+        loading={eager ? "eager" : "lazy"}
+        fetchpriority={eager ? "high" : undefined}
+        class:list={["object-cover", className]}
+      />
+    ))
+}

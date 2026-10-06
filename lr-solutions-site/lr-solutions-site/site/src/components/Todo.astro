@@ -1,0 +1,21 @@
+---
+/**
+ * Affiche un texte en surlignant les marqueurs [À COMPLÉTER …] / [À VALIDER …] / [À VÉRIFIER …].
+ * Avec PUBLIC_HIDE_TODOS=true, les marqueurs sont masqués.
+ * Usage : <Todo text={site.email} />  ou  <Todo>[À COMPLÉTER]</Todo>
+ */
+import { hideTodos } from "../data/site";
+
+interface Props {
+  text?: string;
+}
+
+const brut = Astro.props.text ?? (await Astro.slots.render("default"));
+const morceaux = brut.split(/(\[À (?:COMPLÉTER|VALIDER|VÉRIFIER)[^\]]*\])/g);
+---
+
+{
+  morceaux.map((m, i) =>
+    i % 2 === 1 ? (hideTodos ? null : <span class="todo">{m}</span>) : m,
+  )
+}

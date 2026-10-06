@@ -1,0 +1,287 @@
+---
+/**
+ * Formulaire « Déposer un impayé ».
+ * Envoi via Web3Forms (PUBLIC_WEB3FORMS_KEY) ; sans clé, ouverture d'un e-mail pré-rempli.
+ */
+import Icon from "./Icon.astro";
+import Todo from "./Todo.astro";
+import { secteurs } from "../data/secteurs";
+import { site, mailHref } from "../data/site";
+
+const cle = site.web3formsKey;
+const emailDest = mailHref ? site.email : "";
+
+const champ =
+  "mt-2 block w-full rounded-xl border border-[#cfc4b1] bg-white px-4 py-3 text-base text-texte shadow-[inset_0_1px_2px_rgba(41,52,46,0.04)] transition-colors placeholder:text-texte-doux/70 focus:border-vert-900 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-or-500";
+const label = "block font-titre text-[0.9375rem] font-semibold text-vert-900";
+const requis = '<span class="text-or-700" aria-hidden="true">*</span>';
+
+const vousEtes = ["Entreprise", "Indépendant", "Association", "Autre"];
+const montants = ["< 1 000 €", "1 000 – 5 000 €", "5 000 – 20 000 €", "> 20 000 €"];
+const anciennetes = ["< 3 mois", "3 – 12 mois", "> 1 an"];
+---
+
+<div class="rounded-[24px] bg-white p-6 shadow-carte sm:p-8 lg:p-10" data-formulaire-zone>
+  <h2 class="text-[clamp(1.5rem,3vw,2rem)]" id="titre-formulaire">Déposer un impayé ou poser une question</h2>
+  <span class="filet mt-4"></span>
+  <p class="mt-4 text-sm text-texte-doux">Les champs marqués d’un <span class="text-or-700">*</span> sont obligatoires.</p>
+
+  <form
+    id="formulaire-contact"
+    class="mt-6 grid gap-5 sm:grid-cols-2"
+    action={cle ? "https://api.web3forms.com/submit" : emailDest ? `mailto:${emailDest}` : undefined}
+    method="post"
+    aria-labelledby="titre-formulaire"
+    data-cle={cle}
+    data-email={emailDest}
+  >
+    {cle && <input type="hidden" name="access_key" value={cle} />}
+    <input type="hidden" name="from_name" value="Site LR Solutions" />
+    <input type="hidden" name="subject" value="Nouvelle demande LR Solutions" />
+    <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+    <div>
+      <label for="f-profil" class={label}>Vous êtes</label>
+      <select id="f-profil" name="vous_etes" class={champ}>
+        <option value="">Choisir…</option>
+        {vousEtes.map((v) => <option value={v}>{v}</option>)}
+      </select>
+    </div>
+
+    <div>
+      <label for="f-secteur" class={label}>Secteur</label>
+      <select id="f-secteur" name="secteur" class={champ}>
+        <option value="">Choisir…</option>
+        {secteurs.map((s) => <option value={s.slug}>{s.label}</option>)}
+        <option value="autre">Autre</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="f-nom" class={label}>Nom et prénom <Fragment set:html={requis} /></label>
+      <input id="f-nom" name="nom" type="text" autocomplete="name" required class={champ} aria-describedby="f-nom-err" />
+      <p id="f-nom-err" class="erreur" hidden></p>
+    </div>
+
+    <div>
+      <label for="f-societe" class={label}>Société / structure</label>
+      <input id="f-societe" name="societe" type="text" autocomplete="organization" class={champ} />
+    </div>
+
+    <div>
+      <label for="f-email" class={label}>E-mail <Fragment set:html={requis} /></label>
+      <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required class={champ} aria-describedby="f-email-err" />
+      <p id="f-email-err" class="erreur" hidden></p>
+    </div>
+
+    <div>
+      <label for="f-tel" class={label}>Téléphone <Fragment set:html={requis} /></label>
+      <input
+        id="f-tel"
+        name="telephone"
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        required
+        pattern="\+?[0-9][0-9 .\-]{8,18}"
+        class={champ}
+        aria-describedby="f-tel-err"
+      />
+      <p id="f-tel-err" class="erreur" hidden></p>
+    </div>
+
+    <div>
+      <label for="f-montant" class={label}>Montant total des impayés</label>
+      <select id="f-montant" name="montant" class={champ}>
+        <option value="">Choisir…</option>
+        {montants.map((v) => <option value={v}>{v}</option>)}
+      </select>
+    </div>
+
+    <div>
+      <label for="f-anciennete" class={label}>Ancienneté de la plus vieille facture</label>
+      <select id="f-anciennete" name="anciennete" class={champ}>
+        <option value="">Choisir…</option>
+        {anciennetes.map((v) => <option value={v}>{v}</option>)}
+      </select>
+    </div>
+
+    <div class="sm:col-span-2">
+      <label for="f-message" class={label}>Message <Fragment set:html={requis} /></label>
+      <p id="f-message-aide" class="mt-1 text-sm text-texte-doux">Montant, nombre de factures, depuis quand, ce que vous avez déjà tenté…</p>
+      <textarea id="f-message" name="message" rows="6" required class={`${champ} resize-y`} aria-describedby="f-message-aide f-message-err"></textarea>
+      <p id="f-message-err" class="erreur" hidden></p>
+    </div>
+
+    <div class="sm:col-span-2">
+      <div class="flex items-start gap-3">
+        <input
+          id="f-rgpd"
+          name="consentement_rgpd"
+          type="checkbox"
+          value="oui"
+          required
+          class="mt-1 h-5 w-5 shrink-0 rounded border-[#cfc4b1] accent-vert-900"
+          aria-describedby="f-rgpd-err"
+        />
+        <label for="f-rgpd" class="text-[0.9375rem] text-texte">
+          J’accepte que mes données soient utilisées pour traiter ma demande, conformément à la <a href="/politique-de-confidentialite" class="lien">politique de confidentialité</a>. <Fragment set:html={requis} />
+        </label>
+      </div>
+      <p id="f-rgpd-err" class="erreur" hidden></p>
+    </div>
+
+    <div class="sm:col-span-2">
+      <p class="flex gap-3 rounded-xl bg-creme-100 px-4 py-3 text-sm text-texte-doux">
+        <Icon name="lock" size={18} class="mt-0.5 shrink-0 text-or-700" />
+        Ne joignez pas encore vos factures : je vous indiquerai comment me les transmettre en toute sécurité.
+      </p>
+    </div>
+
+    <div class="sm:col-span-2">
+      <button type="submit" class="btn btn-primaire w-full sm:w-auto" data-envoyer>
+        <span class="spinner hidden" aria-hidden="true"><Icon name="loader" size={18} strokeWidth={2} class="animate-spin" /></span>
+        <span data-envoyer-texte>Envoyer ma demande</span>
+        <Icon name="send" size={18} strokeWidth={2} class="btn-fleche" />
+      </button>
+    </div>
+  </form>
+
+  <div class="mt-6 rounded-2xl bg-creme-100 p-6 text-center" role="status" tabindex="-1" hidden data-succes>
+    <span class="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-vert-900 text-creme-50">
+      <Icon name="circle-check" size={28} />
+    </span>
+    <p class="mt-4 font-titre text-lg font-bold text-vert-900">Merci ! Votre demande est bien arrivée. Je reviens vers vous très rapidement.</p>
+  </div>
+
+  <div class="mt-6 flex gap-3 rounded-2xl border border-[#d9a7a0] bg-[#fbefed] p-5 text-[#7a2b20]" role="alert" tabindex="-1" hidden data-erreur>
+    <Icon name="circle-alert" size={22} class="mt-0.5 shrink-0" />
+    <p>
+      Oups, l’envoi n’a pas fonctionné. Vous pouvez réessayer ou m’écrire directement à {
+        mailHref ? <a href={mailHref} class="font-semibold underline">{site.email}</a> : <Todo text={site.email} />
+      }.
+    </p>
+  </div>
+</div>
+
+<style>
+  .erreur {
+    margin-top: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #9b2c1f;
+  }
+  :global([aria-invalid="true"]) {
+    border-color: #9b2c1f !important;
+  }
+</style>
+
+<script>
+  const form = document.getElementById("formulaire-contact") as HTMLFormElement | null;
+  const zone = document.querySelector<HTMLElement>("[data-formulaire-zone]");
+
+  if (form && zone) {
+    form.noValidate = true;
+    const succes = zone.querySelector<HTMLElement>("[data-succes]")!;
+    const erreurBloc = zone.querySelector<HTMLElement>("[data-erreur]")!;
+    const bouton = form.querySelector<HTMLButtonElement>("[data-envoyer]")!;
+    const spinner = bouton.querySelector<HTMLElement>(".spinner")!;
+    const texteBouton = bouton.querySelector<HTMLElement>("[data-envoyer-texte]")!;
+    const secteur = form.querySelector<HTMLSelectElement>("#f-secteur")!;
+
+    // Pré-remplissage du secteur via ?secteur=
+    const param = new URLSearchParams(location.search).get("secteur");
+    if (param && Array.from(secteur.options).some((o) => o.value === param)) secteur.value = param;
+
+    const messages: Record<string, (el: HTMLInputElement | HTMLTextAreaElement) => string> = {
+      nom: () => "Indiquez votre nom et prénom.",
+      email: (el) => (el.validity.valueMissing ? "Indiquez votre adresse e-mail." : "Cette adresse e-mail ne semble pas valide (ex. nom@entreprise.fr)."),
+      telephone: (el) => (el.validity.valueMissing ? "Indiquez votre numéro de téléphone." : "Ce numéro ne semble pas valide (ex. 06 12 34 56 78)."),
+      message: () => "Décrivez votre situation en quelques mots.",
+      consentement_rgpd: () => "Merci de cocher cette case pour que je puisse traiter votre demande.",
+    };
+
+    const champs = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[required]"));
+
+    function verifier(el: HTMLInputElement | HTMLTextAreaElement) {
+      if (el.type !== "checkbox") el.value = el.value.trimStart();
+      const err = document.getElementById(`${el.id}-err`);
+      const ok = el.checkValidity();
+      el.setAttribute("aria-invalid", String(!ok));
+      if (err) {
+        err.hidden = ok;
+        err.textContent = ok ? "" : (messages[el.name]?.(el) ?? "Ce champ est obligatoire.");
+      }
+      return ok;
+    }
+
+    champs.forEach((el) => {
+      el.addEventListener("blur", () => el.getAttribute("aria-invalid") !== null && verifier(el));
+      el.addEventListener("input", () => el.getAttribute("aria-invalid") === "true" && verifier(el));
+      el.addEventListener("change", () => el.getAttribute("aria-invalid") === "true" && verifier(el));
+    });
+
+    function etatEnvoi(enCours: boolean) {
+      bouton.disabled = enCours;
+      bouton.setAttribute("aria-busy", String(enCours));
+      spinner.classList.toggle("hidden", !enCours);
+      texteBouton.textContent = enCours ? "Envoi en cours…" : "Envoyer ma demande";
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      erreurBloc.hidden = true;
+      const invalides = champs.filter((el) => !verifier(el));
+      if (invalides.length) {
+        invalides[0].focus();
+        return;
+      }
+
+      const data = new FormData(form);
+      const libelleSecteur = secteur.value ? secteur.selectedOptions[0].text : "Non précisé";
+      data.set("subject", `Nouvelle demande LR Solutions — ${libelleSecteur}`);
+      data.set("secteur", libelleSecteur);
+
+      const cle = form.dataset.cle;
+      if (!cle) {
+        // Repli : e-mail pré-rempli
+        const lignes = [
+          `Vous êtes : ${data.get("vous_etes") || "—"}`,
+          `Secteur : ${libelleSecteur}`,
+          `Nom et prénom : ${data.get("nom")}`,
+          `Société / structure : ${data.get("societe") || "—"}`,
+          `E-mail : ${data.get("email")}`,
+          `Téléphone : ${data.get("telephone")}`,
+          `Montant total des impayés : ${data.get("montant") || "—"}`,
+          `Ancienneté de la plus vieille facture : ${data.get("anciennete") || "—"}`,
+          "",
+          `${data.get("message")}`,
+        ];
+        const href = `mailto:${form.dataset.email ?? ""}?subject=${encodeURIComponent(String(data.get("subject")))}&body=${encodeURIComponent(lignes.join("\n"))}`;
+        window.location.href = href;
+        return;
+      }
+
+      etatEnvoi(true);
+      try {
+        const corps = Object.fromEntries(data.entries());
+        const rep = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(corps),
+        });
+        const json = await rep.json().catch(() => ({}));
+        if (!rep.ok || json.success === false) throw new Error(json.message || `HTTP ${rep.status}`);
+        form.hidden = true;
+        zone.querySelector("#titre-formulaire")?.nextElementSibling?.nextElementSibling?.setAttribute("hidden", "");
+        succes.hidden = false;
+        succes.focus();
+      } catch {
+        erreurBloc.hidden = false;
+        erreurBloc.focus();
+      } finally {
+        etatEnvoi(false);
+      }
+    });
+  }
+</script>

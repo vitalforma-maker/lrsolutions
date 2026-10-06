@@ -1,0 +1,23 @@
+---
+import { Image } from "astro:assets";
+import logo from "../assets/logo/logo.png";
+
+interface Props {
+  /** Hauteur affichée en px (le logo source est en définition moyenne : 200 px de large max) */
+  height?: number;
+  class?: string;
+  loading?: "eager" | "lazy";
+}
+const { height = 52, class: className, loading = "eager" } = Astro.props;
+const width = Math.round((height * logo.width) / logo.height);
+---
+
+<Image
+  src={logo}
+  alt="LR Solutions"
+  width={width}
+  height={height}
+  densities={[1, 2]}
+  loading={loading}
+  class={className}
+/>

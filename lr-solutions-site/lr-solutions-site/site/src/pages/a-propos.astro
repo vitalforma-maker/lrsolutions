@@ -1,0 +1,115 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Icon, { type IconKey } from "../components/Icon.astro";
+import Todo from "../components/Todo.astro";
+import Photo from "../components/Photo.astro";
+import { site, hideTodos } from "../data/site";
+
+const fil = [{ nom: "À propos", url: "/a-propos" }];
+
+const engagements: { icon: IconKey; titre: string; texte: string }[] = [
+  { icon: "eye", titre: "Transparence", texte: "vous savez à tout moment où en est votre dossier." },
+  { icon: "file-text", titre: "Clarté", texte: "des honoraires fixés par écrit avant toute action." },
+  { icon: "handshake", titre: "Respect", texte: "des relances courtoises, sans pression abusive." },
+  { icon: "lock", titre: "Confidentialité", texte: "vos informations et celles de vos clients sont protégées." },
+  { icon: "zap", titre: "Réactivité", texte: "une réponse rapide à chaque demande." },
+];
+---
+
+<BaseLayout
+  title="Laurine, experte recouvrement · LR Solutions"
+  description="Une interlocutrice unique pour vos impayés : écoute, réactivité, résultats. Un recouvrement ferme sur le fond, respectueux sur la forme."
+  fil={fil}
+>
+  <PageHeader titre="Une interlocutrice unique pour vos impayés" fil={fil}>
+    <p class="chapo mt-6 text-lg md:text-xl">
+      Je m'appelle {site.gerante.prenom} <Todo text={site.gerante.nom} />, et j'ai créé LR Solutions pour aider les entreprises à récupérer leur argent avec méthode et respect.
+    </p>
+  </PageHeader>
+
+  <!-- Portrait + parcours (masqué en préproduction tant que le texte n'est pas fourni) -->
+  {!hideTodos && (<section class="section bg-creme-50" aria-labelledby="titre-parcours">
+    <div class="container-site grid items-center gap-10 md:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+      <figure class="reveal relative mx-auto w-full max-w-[340px]">
+        <div class="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-vert-900 shadow-[0_24px_50px_rgba(41,52,46,0.16)]">
+          <Photo nom="relances-telephone" class="absolute inset-0 h-full w-full" sizes="340px" flouApercu={2} />
+          <div class="absolute inset-0 bg-gradient-to-t from-vert-900/80 via-transparent to-transparent"></div>
+          <figcaption class="absolute inset-x-5 bottom-5 text-sm text-creme-50">
+            <Todo text="[À COMPLÉTER : photo portrait de Laurine]" />
+          </figcaption>
+        </div>
+        <span class="absolute -top-3 -right-3 -z-10 h-full w-full rounded-[24px] border-2 border-or-500/50" aria-hidden="true"></span>
+      </figure>
+
+      <div class="reveal">
+        <h2 id="titre-parcours">Mon parcours</h2>
+        <span class="filet mt-6"></span>
+        <div class="mt-6 space-y-4 text-lg text-texte-doux">
+          <p><Todo text="[À COMPLÉTER : 4-6 lignes — expérience, d'où vient l'envie de créer LR Solutions. Gabarit proposé :]" /></p>
+          <p class="border-l-2 border-beige-200 pl-4 italic">
+            « Avant de créer LR Solutions, j'ai <Todo text="[expérience : gestion, comptabilité, relation client, recouvrement… — À COMPLÉTER]" />. J'y ai vu combien les impayés pèsent sur les entreprises, surtout les plus petites, et combien une relance bien menée peut tout débloquer. J'ai donc fait de ce savoir-faire mon métier. »
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>)}
+
+  <!-- Méthode -->
+  <section class="on-dark section relative overflow-hidden bg-vert-900 text-creme-50" aria-labelledby="titre-methode">
+    <div class="container-site grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+      <div class="reveal">
+        <p class="surtitre">{site.baseline}</p>
+        <h2 id="titre-methode" class="mt-4 !text-creme-50">Ma méthode : ferme sur le fond, <span class="text-or-300">respectueuse sur la forme</span></h2>
+        <span class="filet mt-6"></span>
+      </div>
+      <div class="reveal">
+        <p class="text-lg text-creme-50/90">
+          Un impayé n'est pas toujours de la mauvaise foi : oubli, difficulté passagère, désaccord… Je commence par comprendre, puis j'agis avec fermeté. C'est cette approche qui permet d'obtenir des paiements tout en préservant, autant que possible, la relation entre vous et votre client.
+        </p>
+        <p class="mt-8"><span class="manuscrit !text-creme-50">Des clients relancés, pas inquiétés.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Engagements -->
+  <section class="section bg-creme-50" aria-labelledby="titre-engagements">
+    <div class="container-site">
+      <div class="reveal max-w-2xl">
+        <h2 id="titre-engagements">Mes engagements</h2>
+        <span class="filet mt-6"></span>
+      </div>
+      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          engagements.map((e) => (
+            <li class="carte reveal">
+              <span class="pastille">
+                <Icon name={e.icon} size={26} />
+              </span>
+              <h3 class="mt-5 font-titre text-base font-bold tracking-[0.06em] uppercase">{e.titre}</h3>
+              <p class="mt-2 text-[0.975rem] text-texte-doux">{e.texte.charAt(0).toUpperCase() + e.texte.slice(1)}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- Cadre légal -->
+      <aside class="reveal mt-12 flex flex-col gap-5 rounded-[20px] border border-beige-200 bg-creme-100 p-6 sm:flex-row sm:gap-6 md:p-8" aria-labelledby="titre-cadre">
+        <span class="pastille !bg-white"><Icon name="shield" size={28} /></span>
+        <div>
+          <h2 id="titre-cadre" class="text-[1.375rem]">Un cadre légal respecté</h2>
+          <p class="mt-2 text-texte-doux">
+            Le recouvrement amiable pour le compte d'autrui est une activité réglementée. LR Solutions dispose d'une assurance responsabilité civile professionnelle <Todo
+              text={site.legal.assureurRcPro}
+            />, d'un compte bancaire dédié aux fonds encaissés pour ses clients, et a effectué sa déclaration auprès du procureur de la République <Todo
+              text={site.legal.tribunalDeclaration}
+            />.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CtaBand court={{ titre: "Parlons de vos impayés", bouton: "Contact" }} fond="creme-100" />
+</BaseLayout>

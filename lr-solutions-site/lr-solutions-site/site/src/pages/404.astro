@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Arcs from "../components/decor/Arcs.astro";
+import Icon from "../components/Icon.astro";
+---
+
+<BaseLayout title="Page introuvable · LR Solutions" description="Cette page est introuvable. Revenons à l'essentiel." noindex>
+  <section class="relative isolate flex min-h-[70vh] items-center overflow-hidden bg-creme-100">
+    <Arcs />
+    <div class="container-site relative py-20 text-center">
+      <p class="font-titre text-[clamp(4rem,16vw,8rem)] leading-none font-extrabold text-or-500" aria-hidden="true">404</p>
+      <h1 class="mx-auto mt-6 max-w-3xl text-[clamp(1.75rem,4.5vw,3rem)]">Cette page est introuvable… contrairement à vos impayés.</h1>
+      <span class="filet mx-auto mt-6"></span>
+      <p class="chapo mx-auto mt-6">Revenons à l'essentiel.</p>
+      <a href="/" class="btn btn-primaire mt-8">
+        Retour à l'accueil
+        <Icon name="arrow-right" size={18} strokeWidth={2} class="btn-fleche" />
+      </a>
+    </div>
+  </section>
+</BaseLayout>

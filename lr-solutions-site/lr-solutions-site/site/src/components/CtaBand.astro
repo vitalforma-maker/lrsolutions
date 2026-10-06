@@ -1,0 +1,77 @@
+---
+import Icon from "./Icon.astro";
+import Todo from "./Todo.astro";
+import { site, telHref, hideTodos } from "../data/site";
+
+interface Props {
+  /** Variante courte (À propos) : un titre et un seul bouton */
+  court?: { titre: string; bouton: string };
+  fond?: "creme" | "creme-100";
+}
+const { court, fond = "creme" } = Astro.props;
+---
+
+<section class:list={["section", fond === "creme" ? "bg-creme-50" : "bg-creme-100"]} aria-labelledby="titre-cta">
+  <div class="container-site">
+    <div class="on-dark reveal relative overflow-hidden rounded-[20px] bg-vert-900 px-6 py-10 text-creme-50 sm:px-10 md:py-14 lg:px-14">
+      <svg class="pointer-events-none absolute -right-10 -bottom-16 hidden h-64 w-64 text-or-500/25 md:block" viewBox="0 0 200 200" aria-hidden="true">
+        <path d="M200 40 A160 160 0 0 0 40 200" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M200 80 A120 120 0 0 0 80 200" fill="none" stroke="currentColor" stroke-width="2" />
+      </svg>
+      <div class="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-10">
+        <div class="flex items-start gap-5 lg:flex-1 lg:gap-8">
+          <span class="hidden shrink-0 border-r border-or-300/40 pr-5 text-creme-50 sm:block lg:pr-8">
+            <Icon name="message" size={52} strokeWidth={1.25} />
+          </span>
+          <div>
+            {
+              court ? (
+                <h2 id="titre-cta" class="!text-creme-50">{court.titre}</h2>
+              ) : (
+                <>
+                  <h2 id="titre-cta" class="text-[clamp(1.6rem,3.2vw,2.3rem)] !text-creme-50">
+                    Vous avez des impayés ? <span class="block text-or-300">On s'en occupe ensemble.</span>
+                  </h2>
+                  <p class="mt-4 max-w-xl text-creme-50/85">
+                    Décrivez-moi votre situation en deux minutes. Je reviens vers vous rapidement avec une première analyse.
+                  </p>
+                </>
+              )
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:w-[22rem] lg:flex-col lg:flex-nowrap">
+          <a href="/contact" class="btn btn-accent">
+            {court ? court.bouton : "Déposer un impayé"}
+            <Icon name="arrow-right" size={18} strokeWidth={2} class="btn-fleche" />
+          </a>
+          {
+            !court && (
+              <>
+                {telHref ? (
+                  <a href={telHref} class="btn btn-contour-clair">
+                    <Icon name="phone" size={18} /> Appeler {site.telephone}
+                  </a>
+                ) : (
+                  !hideTodos && (
+                    <span class="btn btn-contour-clair cursor-default">
+                      <Icon name="phone" size={18} /> Appeler <Todo text={site.telephone} />
+                    </span>
+                  )
+                )}
+                <a href={site.instagram} target="_blank" rel="noopener noreferrer" class="btn btn-contour-clair">
+                  <Icon name="instagram" size={18} /> Écrire « IMPAYÉ » sur Instagram
+                  <span class="sr-only">(nouvel onglet)</span>
+                </a>
+              </>
+            )
+          }
+        </div>
+      </div>
+    </div>
+    <p class="mt-8 text-center font-titre text-xs font-medium tracking-[0.3em] text-or-700 uppercase">
+      Aujourd'hui vos impayés, demain vos projets.
+    </p>
+  </div>
+</section>

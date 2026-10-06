@@ -1,0 +1,164 @@
+---
+/**
+ * Onglets secteurs — pattern ARIA « tabs », hash synchronisé (/secteurs#immobilier).
+ * Sans JavaScript : la barre d'onglets reste masquée et tous les panneaux s'affichent à la suite.
+ */
+import Icon from "./Icon.astro";
+import Todo from "./Todo.astro";
+import { secteurs } from "../data/secteurs";
+---
+
+<div class="onglets" data-onglets>
+  <div class="onglets-barre md:rounded-full md:bg-white md:p-1.5 md:shadow-carte md:ring-1 md:ring-beige-200" hidden data-onglets-barre>
+    <div role="tablist" aria-label="Secteurs d’activité" class="flex flex-wrap gap-2 md:grid md:grid-cols-5 md:gap-1" data-tablist>
+      {
+        secteurs.map((s, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`onglet-${s.slug}`}
+            aria-controls={s.slug}
+            aria-selected={i === 0 ? "true" : "false"}
+            tabindex={i === 0 ? 0 : -1}
+            data-slug={s.slug}
+            class="onglet flex min-h-11 items-center justify-center gap-2 rounded-full border border-beige-200 bg-white px-4 py-2 text-left font-titre text-sm leading-tight font-semibold text-vert-900 transition-colors md:border-0 md:bg-transparent md:px-3 md:text-center"
+          >
+            <Icon name={s.icon} size={18} class="shrink-0" />
+            <span>{s.label}</span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="mt-8 space-y-8 md:mt-10" data-panneaux>
+    {
+      secteurs.map((s) => (
+        <section id={s.slug} role="tabpanel" aria-labelledby={`onglet-${s.slug}`} class="panneau">
+          <div class="overflow-hidden rounded-[24px] bg-white shadow-carte">
+            <div class="grid lg:grid-cols-[1fr_1.15fr]">
+              <div class="relative bg-creme-100 p-6 sm:p-8 lg:p-10">
+                <span class="pastille !h-16 !w-16 !bg-vert-900 !text-creme-50">
+                  <Icon name={s.icon} size={30} />
+                </span>
+                <h2 class="mt-6 text-[clamp(1.5rem,3.2vw,2.1rem)]">{s.titre}</h2>
+                <span class="filet mt-5" />
+                <p class="mt-5 text-lg text-texte-doux">{s.accroche}</p>
+                {s.note && (
+                  <p class="mt-4 text-sm">
+                    <Todo text={s.note} />
+                  </p>
+                )}
+              </div>
+
+              <div class="p-6 sm:p-8 lg:p-10">
+                <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                  <div>
+                    <h3 class="font-titre text-sm font-semibold tracking-[0.16em] uppercase">Les impayés que je rencontre souvent</h3>
+                    <ul class="mt-4 space-y-3">
+                      {s.impayes.map((x) => (
+                        <li class="flex gap-3 text-texte">
+                          <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-or-500" aria-hidden="true" />
+                          <span>{x.charAt(0).toUpperCase() + x.slice(1)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 class="font-titre text-sm font-semibold tracking-[0.16em] uppercase">Ma façon de faire chez vous</h3>
+                    <ul class="mt-4 space-y-3">
+                      {s.methode.map((x) => (
+                        <li class="flex gap-3 text-texte">
+                          <Icon name="check" size={18} strokeWidth={2.25} class="mt-1 shrink-0 text-or-700" />
+                          <span>{x.charAt(0).toUpperCase() + x.slice(1)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <blockquote class="mt-8 border-l-2 border-or-500 pl-4 font-titre text-[1.0625rem] leading-snug font-semibold text-vert-900">
+                  {s.reassurance}
+                </blockquote>
+
+                <a href={`/contact?secteur=${s.slug}`} class="btn btn-primaire mt-8">
+                  {s.cta}
+                  <Icon name="arrow-right" size={18} strokeWidth={2} class="btn-fleche" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .onglet[aria-selected="true"] {
+    background: var(--color-vert-900);
+    border-color: var(--color-vert-900);
+    color: var(--color-creme-50);
+  }
+  .onglet[aria-selected="false"]:hover {
+    background: var(--color-creme-100);
+  }
+</style>
+
+<script>
+  const racine = document.querySelector<HTMLElement>("[data-onglets]");
+  const barre = racine?.querySelector<HTMLElement>("[data-onglets-barre]");
+  const onglets = Array.from(racine?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? []);
+  const panneaux = Array.from(racine?.querySelectorAll<HTMLElement>('[role="tabpanel"]') ?? []);
+
+  if (racine && barre && onglets.length) {
+    barre.hidden = false;
+
+    function activer(slug: string, opts: { focus?: boolean; majHash?: boolean; defiler?: boolean } = {}) {
+      const index = Math.max(0, onglets.findIndex((o) => o.dataset.slug === slug));
+      onglets.forEach((o, i) => {
+        const actif = i === index;
+        o.setAttribute("aria-selected", String(actif));
+        o.tabIndex = actif ? 0 : -1;
+        if (actif) {
+          if (opts.focus) o.focus();
+        }
+      });
+      panneaux.forEach((p, i) => (p.hidden = i !== index));
+      const actifSlug = onglets[index].dataset.slug!;
+      if (opts.majHash) history.replaceState(null, "", `#${actifSlug}`);
+      if (opts.defiler) racine!.scrollIntoView({ block: "start" });
+    }
+
+    const depuisHash = (defiler: boolean) => {
+      const slug = decodeURIComponent(location.hash.slice(1));
+      if (slug && onglets.some((o) => o.dataset.slug === slug)) {
+        activer(slug, { defiler });
+        return true;
+      }
+      return false;
+    };
+
+    if (depuisHash(true)) {
+      // Le navigateur défile vers l'ancre après ce script : on recale sur la barre d'onglets
+      window.addEventListener("load", () => requestAnimationFrame(() => racine.scrollIntoView({ block: "start" })), { once: true });
+    } else {
+      activer(onglets[0].dataset.slug!);
+    }
+    window.addEventListener("hashchange", () => depuisHash(true));
+
+    onglets.forEach((o, i) => {
+      o.addEventListener("click", () => activer(o.dataset.slug!, { majHash: true }));
+      o.addEventListener("keydown", (e) => {
+        let cible = -1;
+        if (e.key === "ArrowRight") cible = (i + 1) % onglets.length;
+        else if (e.key === "ArrowLeft") cible = (i - 1 + onglets.length) % onglets.length;
+        else if (e.key === "Home") cible = 0;
+        else if (e.key === "End") cible = onglets.length - 1;
+        if (cible < 0) return;
+        e.preventDefault();
+        activer(onglets[cible].dataset.slug!, { focus: true, majHash: true });
+      });
+    });
+  }
+</script>

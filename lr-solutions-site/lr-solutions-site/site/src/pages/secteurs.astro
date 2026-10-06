@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import SectorTabs from "../components/SectorTabs.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Icon from "../components/Icon.astro";
+
+const fil = [{ nom: "Secteurs", url: "/secteurs" }];
+---
+
+<BaseLayout
+  title="Recouvrement par secteur d'activité · LR Solutions"
+  description="TPE/PME, artisans, libéraux, immobilier, services B2B, associations et organismes de formation : un recouvrement adapté à votre métier."
+  fil={fil}
+>
+  <PageHeader
+    titre="Chaque secteur a ses impayés. Et sa façon de les traiter."
+    chapo="Je n'aborde pas un locataire, un client particulier d'un artisan ou le service comptable d'une grande entreprise de la même manière. Choisissez votre secteur."
+    fil={fil}
+    photo="secteurs-commerce"
+  />
+
+  <section class="bg-creme-50 pt-8 pb-14 md:pt-12 md:pb-20" aria-label="Secteurs d’activité">
+    <div class="container-site">
+      <SectorTabs />
+
+      <div class="mt-10 flex flex-col items-start gap-5 rounded-[20px] border border-dashed border-or-500/70 p-6 sm:flex-row sm:items-center sm:justify-between md:p-8">
+        <div>
+          <h2 class="text-[1.375rem]">Votre secteur n'est pas dans la liste ?</h2>
+          <p class="mt-1.5 text-texte-doux">J'accompagne aussi d'autres activités. Parlons de votre situation.</p>
+        </div>
+        <a href="/contact" class="btn btn-secondaire shrink-0">
+          Contact
+          <Icon name="arrow-right" size={18} strokeWidth={2} class="btn-fleche" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand fond="creme-100" />
+</BaseLayout>

@@ -1,0 +1,44 @@
+---
+import Icon, { type IconKey } from "./Icon.astro";
+
+const valeurs: { icon: IconKey; titre: string; texte: string }[] = [
+  {
+    icon: "ear",
+    titre: "Écoute",
+    texte: "Je prends le temps de comprendre votre situation et votre relation avec le client avant d'agir.",
+  },
+  {
+    icon: "zap",
+    titre: "Réactivité",
+    texte: "Plus une facture est relancée tôt, plus elle a de chances d'être payée. Je démarre vite.",
+  },
+  {
+    icon: "target",
+    titre: "Résultats",
+    texte: "Mon objectif est simple : que votre argent revienne dans votre trésorerie.",
+  },
+];
+---
+
+<section class="on-dark section relative bg-vert-900 text-creme-50" aria-labelledby="titre-pourquoi">
+  <div class="container-site relative">
+    <div class="max-w-2xl">
+      <p class="surtitre">{valeurs.map((v) => v.titre).join(" · ")}</p>
+      <h2 id="titre-pourquoi" class="mt-4 !text-creme-50">Pourquoi me confier vos impayés</h2>
+      <span class="filet mt-6"></span>
+    </div>
+    <ul class="mt-12 grid gap-10 md:grid-cols-3 md:gap-0">
+      {
+        valeurs.map((v, i) => (
+          <li class:list={["reveal md:px-8", { "md:border-l md:border-or-300/30": i > 0, "md:pl-0": i === 0 }]}>
+            <span class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-vert-700 text-or-300">
+              <Icon name={v.icon} size={28} />
+            </span>
+            <h3 class="mt-5 font-titre text-lg font-bold tracking-[0.12em] !text-creme-50 uppercase">{v.titre}</h3>
+            <p class="mt-2 text-creme-50/85">{v.texte}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,40 @@
+---
+import Icon from "./Icon.astro";
+import { secteurs } from "../data/secteurs";
+---
+
+<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+  {
+    secteurs.map((s, i) => (
+      <li class:list={["reveal", { "lg:col-span-1": i < 3 }]}>
+        <a
+          href={`/secteurs#${s.slug}`}
+          class="carte group flex h-full flex-col transition-shadow duration-200 hover:shadow-[var(--shadow-carte-hover)]"
+        >
+          <span class="pastille transition-colors group-hover:bg-vert-900 group-hover:text-creme-50">
+            <Icon name={s.icon} size={28} />
+          </span>
+          <h3 class="mt-5 text-[1.125rem]">{s.label}</h3>
+          <p class="mt-2 flex-1 text-[0.975rem] text-texte-doux">{s.ligne}</p>
+          <span class="mt-5 inline-flex items-center gap-2 font-titre text-sm font-semibold text-or-700">
+            Découvrir
+            <Icon name="arrow-right" size={16} strokeWidth={2} class="transition-transform group-hover:translate-x-1" />
+            <span class="sr-only"> : {s.label}</span>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+  <li class="reveal">
+    <a
+      href="/contact"
+      class="group flex h-full flex-col justify-center rounded-2xl border border-dashed border-or-500/70 p-6 transition-colors hover:bg-creme-50"
+    >
+      <p class="font-titre text-lg font-bold text-vert-900">Votre secteur n'est pas dans la liste ?</p>
+      <p class="mt-2 text-[0.975rem] text-texte-doux">J'accompagne aussi d'autres activités. Parlons de votre situation.</p>
+      <span class="mt-4 inline-flex items-center gap-2 font-titre text-sm font-semibold text-or-700">
+        Contact <Icon name="arrow-right" size={16} strokeWidth={2} class="transition-transform group-hover:translate-x-1" />
+      </span>
+    </a>
+  </li>
+</ul>

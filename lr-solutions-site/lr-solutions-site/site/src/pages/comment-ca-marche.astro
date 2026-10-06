@@ -1,0 +1,181 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Faq from "../components/Faq.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Icon from "../components/Icon.astro";
+import Todo from "../components/Todo.astro";
+import Photo from "../components/Photo.astro";
+import { etapes } from "../data/etapes";
+import { hideTodos, isTodo } from "../data/site";
+import { faq } from "../data/faq";
+
+const fil = [{ nom: "Comment ça marche", url: "/comment-ca-marche" }];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((q) => ({
+    "@type": "Question",
+    name: q.question,
+    acceptedAnswer: { "@type": "Answer", text: q.reponse },
+  })),
+};
+
+const documents = [
+  "Les factures impayées",
+  "Le devis, bon de commande ou contrat signé",
+  "Les coordonnées complètes du client",
+  "Les relances déjà envoyées et les échanges éventuels",
+  "Tout élément utile (litige, réclamation, promesse de paiement…)",
+];
+---
+
+<BaseLayout
+  title="Comment se passe le recouvrement amiable · LR Solutions"
+  description="Les 5 étapes du recouvrement amiable avec LR Solutions : analyse, relances, échéancier, encaissement et relais commissaire de justice si nécessaire."
+  fil={fil}
+  jsonLd={[faqLd]}
+>
+  <PageHeader
+    titre="Comment se passe le recouvrement avec LR Solutions ?"
+    chapo="Pas de jargon, pas de surprise. Voici, étape par étape, ce que je fais, ce que vous avez à faire, et ce à quoi vous attendre."
+    fil={fil}
+  />
+
+  <!-- Schéma détaillé -->
+  <section class="section bg-creme-50" aria-labelledby="titre-etapes">
+    <div class="container-site">
+      <h2 id="titre-etapes" class="sr-only">Les 5 étapes en détail</h2>
+      <ol class="etapes-detail relative space-y-6 md:space-y-8">
+        {
+          etapes.map((e) => (
+            <li class:list={["reveal relative md:pl-24", { "etape-option": e.optionnelle }]}>
+              <span
+                class:list={[
+                  "absolute top-7 left-0 z-10 hidden h-14 w-14 items-center justify-center rounded-full font-titre text-xl font-extrabold md:flex",
+                  e.optionnelle ? "border-2 border-dashed border-or-500 bg-creme-50 text-or-700" : "bg-or-500 text-vert-900",
+                ]}
+                aria-hidden="true"
+              >
+                {e.numero}
+              </span>
+              <article class:list={["rounded-[20px] p-6 sm:p-8", e.optionnelle ? "border-2 border-dashed border-or-500/60 bg-creme-50" : "bg-white shadow-carte"]}>
+                <header class="flex items-center gap-4">
+                  <span
+                    class:list={[
+                      "inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-titre text-lg font-extrabold md:hidden",
+                      e.optionnelle ? "border-2 border-dashed border-or-500 text-or-700" : "bg-or-500 text-vert-900",
+                    ]}
+                    aria-hidden="true"
+                  >
+                    {e.numero}
+                  </span>
+                  <div>
+                    <p class="font-titre text-xs font-medium tracking-[0.25em] text-or-700 uppercase">Étape {e.numero}</p>
+                    <h3 class="mt-1 text-[1.25rem] md:text-[1.4rem]">{e.titreDetail}</h3>
+                  </div>
+                  <Icon name={e.icon} size={30} class="ml-auto hidden shrink-0 text-or-600 sm:block" />
+                </header>
+                <dl class="mt-6 grid gap-5 border-t border-beige-200 pt-6 md:grid-cols-[1fr_1fr_0.7fr] md:gap-8">
+                  <div>
+                    <dt class="flex items-center gap-2 font-titre text-sm font-semibold tracking-[0.12em] text-vert-900 uppercase">
+                      <Icon name="briefcase" size={18} class="text-or-700" /> Ce que je fais
+                    </dt>
+                    <dd class="mt-2 text-texte-doux">{e.jeFais}</dd>
+                  </div>
+                  <div>
+                    <dt class="flex items-center gap-2 font-titre text-sm font-semibold tracking-[0.12em] text-vert-900 uppercase">
+                      <Icon name="user" size={18} class="text-or-700" /> Ce que vous faites
+                    </dt>
+                    <dd class="mt-2 text-texte-doux">{e.vousFaites}</dd>
+                  </div>
+                  {!(hideTodos && isTodo(e.delai)) && (<div>
+                    <dt class="flex items-center gap-2 font-titre text-sm font-semibold tracking-[0.12em] text-vert-900 uppercase">
+                      <Icon name="clock" size={18} class="text-or-700" /> Délai indicatif
+                    </dt>
+                    <dd class="mt-2 text-texte-doux">
+                      <Todo text={e.delai} />
+                    </dd>
+                  </div>)}
+                </dl>
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Documents + honoraires -->
+  <section class="section bg-creme-100" aria-labelledby="titre-documents">
+    <div class="container-site grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10">
+      <div class="reveal rounded-[20px] bg-white p-6 shadow-carte sm:p-8 lg:p-10">
+        <span class="pastille"><Icon name="list-checks" size={28} /></span>
+        <h2 id="titre-documents" class="mt-6 text-[clamp(1.5rem,3vw,2rem)]">Ce que vous devez me transmettre</h2>
+        <ul class="mt-6 space-y-3.5">
+          {
+            documents.map((d) => (
+              <li class="flex gap-3">
+                <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-vert-900 text-creme-50">
+                  <Icon name="check" size={14} strokeWidth={2.5} />
+                </span>
+                <span>{d}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-8">
+        <div class="relative hidden min-h-56 flex-1 overflow-hidden rounded-[20px] bg-vert-900 lg:block">
+          <Photo nom="echeancier-ensemble" class="absolute inset-0 h-full w-full" sizes="420px" />
+          <div class="absolute inset-0 bg-gradient-to-t from-vert-900/70 to-transparent"></div>
+        </div>
+        <aside class="on-dark reveal rounded-[20px] bg-vert-900 p-6 text-creme-50 sm:p-8" aria-labelledby="titre-honoraires">
+          <div class="flex items-center gap-4">
+            <span class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-vert-700 text-or-300"><Icon name="coins" size={26} /></span>
+            <h2 id="titre-honoraires" class="text-[1.5rem] !text-creme-50">Mes honoraires</h2>
+          </div>
+          <p class="mt-5 text-creme-50/90">
+            Mes honoraires sont présentés et validés avec vous <strong class="text-or-300">avant toute action</strong>, dans une convention écrite.{" "}
+            <Todo text="[À COMPLÉTER : modèle tarifaire — ex. forfait d'ouverture de dossier et/ou pourcentage des sommes récupérées]" />. Pas de frais cachés.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section bg-creme-50" aria-labelledby="titre-faq">
+    <div class="container-site grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-16">
+      <div class="reveal lg:sticky lg:top-32 lg:self-start">
+        <p class="surtitre">FAQ</p>
+        <h2 id="titre-faq" class="mt-4">Les questions qu'on me pose souvent</h2>
+        <span class="filet mt-6"></span>
+      </div>
+      <Faq />
+    </div>
+  </section>
+
+  <CtaBand fond="creme-100" />
+</BaseLayout>
+
+<style>
+  /* Ligne or verticale reliant les étapes (pointillée vers l'étape optionnelle) */
+  @media (min-width: 768px) {
+    .etapes-detail > li:not(:last-child)::before {
+      content: "";
+      position: absolute;
+      left: 27px;
+      top: calc(1.75rem + 56px);
+      height: calc(100% - 56px + 2rem);
+      width: 2px;
+      background: var(--color-or-500);
+    }
+    .etapes-detail > li:nth-last-child(2)::before {
+      background: none;
+      border-left: 2px dashed var(--color-or-500);
+    }
+  }
+</style>

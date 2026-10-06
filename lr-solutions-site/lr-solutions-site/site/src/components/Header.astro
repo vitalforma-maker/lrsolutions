@@ -1,0 +1,302 @@
+---
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import Todo from "./Todo.astro";
+import { navigation } from "../data/navigation";
+import { site, telHref, hideTodos } from "../data/site";
+
+const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+const estActif = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+---
+
+<header id="site-header" class="site-header sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-300">
+  <div class="container-site flex h-[var(--header-h)] items-center justify-between gap-4">
+    <a href="/" class="flex shrink-0 items-center gap-3" aria-label="LR Solutions — accueil">
+      <Logo height={48} class="h-12 w-auto" />
+      <span class="hidden flex-col border-l border-or-500/50 pl-3 xl:flex">
+        <span class="font-titre text-[0.6875rem] font-medium tracking-[0.28em] text-or-700 uppercase">{site.sousTitre}</span>
+      </span>
+    </a>
+
+    <nav aria-label="Navigation principale" class="hidden lg:block">
+      <ul class="flex items-center gap-0.5 xl:gap-1">
+        {
+          navigation.map((item) =>
+            item.sous ? (
+              <li class="nav-deroulant relative" data-deroulant>
+                <div class="flex items-center">
+                  <a href={item.href} class:list={["nav-onglet", { actif: estActif(item.href) }]} aria-current={estActif(item.href) ? "page" : undefined}>
+                    {item.label}
+                  </a>
+                  <button
+                    type="button"
+                    class="-ml-2 inline-flex h-9 w-8 items-center justify-center rounded text-vert-900 hover:text-or-700"
+                    aria-expanded="false"
+                    aria-controls="sous-menu-secteurs"
+                    data-deroulant-btn
+                  >
+                    <Icon name="chevron-down" size={16} strokeWidth={2} class="transition-transform" />
+                    <span class="sr-only">Afficher les secteurs</span>
+                  </button>
+                </div>
+                <div id="sous-menu-secteurs" class="sous-menu absolute top-full left-1/2 w-80 -translate-x-1/2 pt-2" data-deroulant-menu>
+                  <ul class="rounded-2xl bg-white p-2 shadow-[0_18px_40px_rgba(41,52,46,0.14)] ring-1 ring-beige-200">
+                    {item.sous.map((s) => (
+                      <li>
+                        <a href={s.href} class="block rounded-xl px-4 py-2.5 text-[0.9375rem] text-texte transition-colors hover:bg-creme-100 hover:text-vert-900">
+                          {s.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a href={item.href} class:list={["nav-onglet", { actif: estActif(item.href) }]} aria-current={estActif(item.href) ? "page" : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/contact" class="btn btn-accent hidden !min-h-11 !px-5 !py-2.5 whitespace-nowrap lg:inline-flex">Déposer un impayé</a>
+      <button
+        type="button"
+        class="inline-flex h-12 w-12 items-center justify-center rounded-full text-vert-900 hover:bg-creme-100 lg:hidden"
+        aria-expanded="false"
+        aria-controls="menu-mobile"
+        data-menu-ouvrir
+      >
+        <Icon name="menu" size={28} />
+        <span class="sr-only">Ouvrir le menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Menu mobile plein écran -->
+<div
+  id="menu-mobile"
+  class="menu-mobile on-dark fixed inset-0 z-50 flex flex-col overflow-y-auto bg-vert-900 text-creme-50 lg:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu"
+  hidden
+>
+  <div class="container-site flex h-[var(--header-h)] shrink-0 items-center justify-between">
+    <a href="/" class="rounded-xl bg-creme-50 px-3 py-1.5" aria-label="LR Solutions — accueil">
+      <Logo height={40} class="h-10 w-auto" loading="lazy" />
+    </a>
+    <button type="button" class="inline-flex h-12 w-12 items-center justify-center rounded-full hover:bg-vert-700" data-menu-fermer>
+      <Icon name="x" size={28} />
+      <span class="sr-only">Fermer le menu</span>
+    </button>
+  </div>
+
+  <nav aria-label="Navigation mobile" class="container-site flex-1 pt-4 pb-8">
+    <ul class="space-y-1">
+      {
+        navigation.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                "flex items-center justify-between border-b border-vert-700 py-4 font-titre text-2xl font-bold",
+                { "text-or-300": estActif(item.href) },
+              ]}
+              aria-current={estActif(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+            {item.sous && (
+              <ul class="grid gap-1 py-3 pl-4">
+                {item.sous.map((s) => (
+                  <li>
+                    <a href={s.href} class="block py-1.5 text-base text-creme-50/85 hover:text-or-300">
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-8 space-y-4">
+      <a href="/contact" class="btn btn-accent w-full">Déposer un impayé</a>
+      <div class="flex flex-col gap-3 pt-2 text-base">
+        {
+          telHref ? (
+            <a href={telHref} class="inline-flex items-center gap-3 hover:text-or-300">
+              <Icon name="phone" size={20} class="text-or-300" />
+              {site.telephone}
+            </a>
+          ) : (
+            !hideTodos && (
+              <span class="inline-flex items-center gap-3">
+                <Icon name="phone" size={20} class="text-or-300" />
+                <Todo text={site.telephone} />
+              </span>
+            )
+          )
+        }
+        <a href={site.instagram} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 hover:text-or-300">
+          <Icon name="instagram" size={20} class="text-or-300" />
+          {site.instagramHandle}
+          <span class="sr-only">(nouvel onglet)</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<style>
+  .site-header {
+    background: rgb(250 247 238 / 0.92);
+  }
+  .site-header.est-defile {
+    background: var(--color-creme-50);
+
+
+    box-shadow: 0 1px 0 rgb(166 139 109 / 0.25);
+  }
+  @media (min-width: 1024px) {
+    :global(:root) {
+      --header-h: 84px;
+    }
+  }
+  .nav-onglet {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 0.7rem;
+    white-space: nowrap;
+    font-family: var(--font-titre);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--color-vert-900);
+    border-radius: 6px;
+    transition: color 0.2s;
+  }
+  .nav-onglet::after {
+    content: "";
+    position: absolute;
+    left: 0.7rem;
+    right: 0.7rem;
+    bottom: 4px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-or-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s;
+  }
+  .nav-onglet:hover::after,
+  .nav-onglet.actif::after {
+    transform: scaleX(1);
+  }
+  .sous-menu {
+    visibility: hidden;
+    opacity: 0;
+    transform: translate(-50%, 6px);
+    transition:
+      opacity 0.18s,
+      transform 0.18s,
+      visibility 0s linear 0.18s;
+  }
+  .nav-deroulant:hover .sous-menu,
+  .nav-deroulant.ouvert .sous-menu {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, 0);
+    transition-delay: 0s;
+  }
+  .nav-deroulant.ouvert [data-deroulant-btn] :global(svg) {
+    transform: rotate(180deg);
+  }
+</style>
+
+<script>
+  const header = document.getElementById("site-header");
+  const onScroll = () => header?.classList.toggle("est-defile", window.scrollY > 8);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Sous-menu Secteurs (survol en CSS, clic + clavier ici)
+  document.querySelectorAll<HTMLElement>("[data-deroulant]").forEach((li) => {
+    const btn = li.querySelector<HTMLButtonElement>("[data-deroulant-btn]");
+    if (!btn) return;
+    const fermer = () => {
+      li.classList.remove("ouvert");
+      btn.setAttribute("aria-expanded", "false");
+    };
+    btn.addEventListener("click", () => {
+      const ouvert = li.classList.toggle("ouvert");
+      btn.setAttribute("aria-expanded", String(ouvert));
+    });
+    li.addEventListener("focusout", (e) => {
+      if (!li.contains(e.relatedTarget as Node)) fermer();
+    });
+    li.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        fermer();
+        btn.focus();
+      }
+    });
+    li.querySelectorAll("[data-deroulant-menu] a").forEach((a) => a.addEventListener("click", fermer));
+  });
+
+  // Menu mobile plein écran : focus piégé, fermeture à Échap
+  const menu = document.getElementById("menu-mobile");
+  const ouvrir = document.querySelector<HTMLButtonElement>("[data-menu-ouvrir]");
+  const fermerBtn = document.querySelector<HTMLButtonElement>("[data-menu-fermer]");
+  const focusables = () =>
+    Array.from(menu?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") ?? []);
+
+  function fermerMenu() {
+    if (!menu || menu.hidden) return;
+    menu.hidden = true;
+    document.documentElement.style.overflow = "";
+    ouvrir?.setAttribute("aria-expanded", "false");
+    ouvrir?.focus();
+  }
+  ouvrir?.addEventListener("click", () => {
+    if (!menu) return;
+    menu.hidden = false;
+    document.documentElement.style.overflow = "hidden";
+    ouvrir.setAttribute("aria-expanded", "true");
+    fermerBtn?.focus();
+  });
+  fermerBtn?.addEventListener("click", fermerMenu);
+  menu?.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") return fermerMenu();
+    if (e.key !== "Tab") return;
+    const els = focusables();
+    const premier = els[0];
+    const dernier = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === premier) {
+      e.preventDefault();
+      dernier?.focus();
+    } else if (!e.shiftKey && document.activeElement === dernier) {
+      e.preventDefault();
+      premier?.focus();
+    }
+  });
+  // Les liens d'ancre (/secteurs#…) sur la même page doivent aussi fermer le menu
+  menu?.querySelectorAll("a").forEach((a) =>
+    a.addEventListener("click", () => {
+      menu.hidden = true;
+      document.documentElement.style.overflow = "";
+      ouvrir?.setAttribute("aria-expanded", "false");
+    }),
+  );
+  window.matchMedia("(min-width: 1024px)").addEventListener("change", (e) => e.matches && fermerMenu());
+</script>

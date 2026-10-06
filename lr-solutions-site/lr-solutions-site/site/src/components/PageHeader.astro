@@ -1,0 +1,58 @@
+---
+import Arcs from "./decor/Arcs.astro";
+import Photo from "./Photo.astro";
+import { getPhoto, type NomPhoto } from "../lib/photos";
+
+interface Props {
+  titre: string;
+  chapo?: string;
+  fil: { nom: string; url: string }[];
+  /** Photo de fond — utilisée seulement en HD : l'aperçu basse définition est remplacé par le dégradé */
+  photo?: NomPhoto;
+}
+const { titre, chapo, fil, photo } = Astro.props;
+const photoHd = photo && getPhoto(photo)?.apercu === false ? photo : undefined;
+---
+
+<section class="relative isolate overflow-hidden bg-creme-100">
+  {
+    photoHd ? (
+      <div class="absolute inset-0 -z-10" aria-hidden="true">
+        <Photo nom={photoHd} decorative eager class="h-full w-full" sizes="100vw" />
+        <div class="absolute inset-0 bg-creme-50/80" />
+      </div>
+    ) : (
+      <div class="absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_100%_0%,#e6dccb_0%,#f3eee2_45%,#faf7ee_100%)]" aria-hidden="true" />
+    )
+  }
+  <Arcs haut={false} />
+  <div class="container-site relative pt-8 pb-12 md:pt-12 md:pb-16 lg:pt-16 lg:pb-20">
+    <nav aria-label="Fil d’Ariane" class="text-sm text-texte-doux">
+      <ol class="flex flex-wrap items-center gap-2">
+        <li><a href="/" class="hover:text-vert-900 hover:underline">Accueil</a></li>
+        {
+          fil.map((e, i) => (
+            <li class="flex items-center gap-2">
+              <span aria-hidden="true" class="text-or-700">/</span>
+              {i === fil.length - 1 ? (
+                <span aria-current="page" class="text-vert-900">
+                  {e.nom}
+                </span>
+              ) : (
+                <a href={e.url} class="hover:underline">
+                  {e.nom}
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    <div class="mt-6 max-w-3xl md:mt-8">
+      <h1 class="text-[clamp(2rem,5.5vw,3.5rem)] leading-[1.08]">{titre}</h1>
+      <span class="filet mt-6"></span>
+      {chapo && <p class="chapo mt-6 text-lg md:text-xl">{chapo}</p>}
+      <slot />
+    </div>
+  </div>
+</section>

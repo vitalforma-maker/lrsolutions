@@ -1,0 +1,64 @@
+---
+import Icon, { type IconKey } from "./Icon.astro";
+import Photo from "./Photo.astro";
+
+const services: { icon: IconKey; titre: string; texte: string }[] = [
+  {
+    icon: "file-text",
+    titre: "Relances",
+    texte:
+      "Des relances professionnelles et ciblées : écrites et téléphoniques, adaptées à votre client et à l'ancienneté de la facture.",
+  },
+  {
+    icon: "chart",
+    titre: "Suivi des dossiers",
+    texte: "Un suivi régulier et transparent. Vous êtes informé(e) de chaque action et de chaque réponse.",
+  },
+  {
+    icon: "calendar",
+    titre: "Échéanciers",
+    texte: "Des échéanciers adaptés à chaque situation, pour obtenir un paiement réaliste plutôt qu'un blocage.",
+  },
+  {
+    icon: "coins",
+    titre: "Encaissement",
+    texte: "Je récupère les sommes et je vous les reverse, avec un récapitulatif clair.",
+  },
+];
+---
+
+<div class="grid gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.6fr)] lg:items-stretch lg:gap-10">
+  <div class="relative hidden overflow-hidden rounded-[20px] bg-vert-900 lg:block">
+    <Photo nom="echeancier-ensemble" class="absolute inset-0 h-full w-full" sizes="400px" flouApercu={3} />
+    <div class="absolute inset-0 bg-gradient-to-t from-vert-900/90 via-vert-900/30 to-transparent"></div>
+    <p class="absolute inset-x-6 bottom-6 font-titre text-xl leading-snug font-bold text-creme-50">
+      Je prends en charge votre recouvrement <span class="text-or-300">de A à Z.</span>
+    </p>
+  </div>
+
+  <ul class="grid gap-5 sm:grid-cols-2">
+    {
+      services.map((s) => (
+        <li class="carte reveal flex flex-col">
+          <span class="pastille">
+            <Icon name={s.icon} size={28} />
+          </span>
+          <h3 class="mt-5 font-titre text-base font-bold tracking-[0.08em] uppercase">{s.titre}</h3>
+          <p class="mt-2 text-[0.975rem] text-texte-doux">{s.texte}</p>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<aside class="reveal mt-8 flex flex-col gap-4 rounded-[20px] border border-or-500/40 bg-creme-50 p-6 sm:flex-row sm:items-center sm:gap-6 md:p-8">
+  <span class="flex items-center gap-6 text-or-600 sm:border-r sm:border-or-500/50 sm:pr-6">
+    <Icon name="scale" size={48} strokeWidth={1.25} />
+  </span>
+  <div>
+    <h3 class="text-lg">Et si l'amiable ne suffit pas ?</h3>
+    <p class="mt-1.5 text-texte-doux">
+      Le dossier peut être transmis à une étude de commissaires de justice partenaire, qui prend le relais pour les démarches judiciaires. Vous n'avez pas à chercher : je fais le lien.
+    </p>
+  </div>
+</aside>

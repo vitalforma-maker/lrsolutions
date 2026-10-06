@@ -1,0 +1,40 @@
+---
+import Icon from "./Icon.astro";
+import Todo from "./Todo.astro";
+import { faq } from "../data/faq";
+---
+
+<div class="divide-y divide-beige-200 overflow-hidden rounded-[20px] bg-white shadow-carte">
+  {
+    faq.map((q) => (
+      <details class="faq-item group">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 md:px-7">
+          <h3 class="font-titre text-[1.0625rem] leading-snug font-semibold">{q.question}</h3>
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-creme-100 text-vert-900 transition-transform duration-200 group-open:rotate-180">
+            <Icon name="chevron-down" size={18} strokeWidth={2} />
+          </span>
+        </summary>
+        <div class="px-5 pb-6 text-texte-doux md:px-7">
+          <p>
+            {q.reponse}
+            {q.todo && (
+              <>
+                {" "}
+                <Todo text={q.todo} />
+              </>
+            )}
+          </p>
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover h3 {
+    color: var(--color-or-700);
+  }
+</style>

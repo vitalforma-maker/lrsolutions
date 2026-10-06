@@ -1,0 +1,57 @@
+---
+/** Barre d'action collante en bas d'écran (mobile), visible après 300 px de défilement. */
+import Icon from "./Icon.astro";
+import { site, telHref } from "../data/site";
+---
+
+<div id="barre-mobile" class="barre-mobile fixed inset-x-0 bottom-0 z-30 md:hidden" aria-label="Actions rapides" role="region">
+  <div class="mx-3 mb-3 grid grid-cols-[0.85fr_1.15fr] gap-2 rounded-full bg-vert-900 p-1.5 shadow-[0_10px_30px_rgba(41,52,46,0.3)]">
+    {
+      telHref ? (
+        <a href={telHref} class="flex min-h-12 items-center justify-center gap-2 rounded-full font-titre text-[0.9375rem] font-semibold text-creme-50">
+          <Icon name="phone" size={18} class="text-or-300" />
+          Appeler
+        </a>
+      ) : (
+        <a href={site.instagram} target="_blank" rel="noopener noreferrer" class="flex min-h-12 items-center justify-center gap-2 rounded-full font-titre text-[0.9375rem] font-semibold text-creme-50">
+          <Icon name="instagram" size={18} class="text-or-300" />
+          Instagram<span class="sr-only"> (nouvel onglet)</span>
+        </a>
+      )
+    }
+    <a href="/contact" class="flex min-h-12 items-center justify-center rounded-full bg-or-500 px-3 font-titre text-[0.9375rem] font-bold whitespace-nowrap text-vert-900">
+      Déposer un impayé
+    </a>
+  </div>
+</div>
+
+<style>
+  .barre-mobile {
+    transform: translateY(120%);
+    transition: transform 0.3s ease;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .barre-mobile.visible {
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .barre-mobile {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const barre = document.getElementById("barre-mobile");
+  if (barre) {
+    const liens = barre.querySelectorAll("a");
+    const maj = () => {
+      const visible = window.scrollY > 300;
+      barre.classList.toggle("visible", visible);
+      liens.forEach((a) => (visible ? a.removeAttribute("tabindex") : a.setAttribute("tabindex", "-1")));
+      barre.toggleAttribute("inert", !visible);
+    };
+    maj();
+    window.addEventListener("scroll", maj, { passive: true });
+  }
+</script>

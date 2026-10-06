@@ -1,0 +1,22 @@
+---
+/** Filet or court, ou long filet de part et d'autre d'un texte centré. */
+interface Props {
+  variant?: "court" | "encadre";
+  class?: string;
+}
+const { variant = "court", class: className } = Astro.props;
+---
+
+{
+  variant === "court" ? (
+    <span class:list={["filet", className]} aria-hidden="true" />
+  ) : (
+    <div class:list={["flex items-center gap-4 sm:gap-6", className]}>
+      <span class="h-px flex-1 bg-or-500/60" aria-hidden="true" />
+      <div class="text-center">
+        <slot />
+      </div>
+      <span class="h-px flex-1 bg-or-500/60" aria-hidden="true" />
+    </div>
+  )
+}

@@ -1,0 +1,137 @@
+---
+import "../styles/global.css";
+import montserrat800 from "@fontsource/montserrat/files/montserrat-latin-800-normal.woff2?url";
+import montserrat700 from "@fontsource/montserrat/files/montserrat-latin-700-normal.woff2?url";
+import inter400 from "@fontsource/inter/files/inter-latin-400-normal.woff2?url";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import MobileActionBar from "../components/MobileActionBar.astro";
+import { site, known } from "../data/site";
+import { typo } from "../lib/typo";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Fil d'Ariane (pages internes) — l'accueil est ajouté automatiquement */
+  fil?: { nom: string; url: string }[];
+  /** Données structurées supplémentaires (ex. FAQPage) */
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { title, description, fil, jsonLd = [], noindex = false } = Astro.props;
+
+const chemin = Astro.url.pathname.replace(/\.html$/, "").replace(/\/index$/, "").replace(/(.)\/$/, "$1") || "/";
+const base = Astro.site ?? new URL("https://lr-solutions.vercel.app");
+const canonical = new URL(chemin, base).href;
+const ogImage = new URL("/og-image.jpg", base).href;
+const logoUrl = new URL("/logo-lr-solutions.png", base).href;
+
+// JSON-LD : on n'inclut jamais de champ dont la valeur est un marqueur [À COMPLÉTER]
+const organisation: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "@id": new URL("/#organisation", base).href,
+  name: site.nom,
+  description:
+    "Recouvrement amiable de factures impayées pour entreprises, TPE, PME, artisans, professions libérales et indépendants. Île-de-France et à distance.",
+  url: base.href,
+  logo: logoUrl,
+  image: ogImage,
+  areaServed: [
+    { "@type": "AdministrativeArea", name: "Île-de-France" },
+    { "@type": "Country", name: "France" },
+  ],
+  sameAs: [site.instagram],
+  knowsLanguage: "fr",
+};
+if (known(site.telephone)) organisation.telephone = site.telephone;
+if (known(site.email)) organisation.email = site.email;
+if (known(site.legal.adresse)) organisation.address = site.legal.adresse;
+if (known(site.gerante.nom)) organisation.founder = { "@type": "Person", name: `${site.gerante.prenom} ${site.gerante.nom}` };
+
+const donnees: Record<string, unknown>[] = [organisation, ...jsonLd];
+if (fil && fil.length) {
+  donnees.push({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [{ nom: "Accueil", url: "/" }, ...fil].map((e, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: e.nom,
+      item: new URL(e.url, base).href,
+    })),
+  });
+}
+// Typographie française dans les données structurées aussi
+const jsonLdTexte = JSON.stringify(donnees, (_k, v) => (typeof v === "string" && !/^https?:/.test(v) ? typo(v) : v));
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#29342E" />
+    <meta name="color-scheme" content="light" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preload" href={montserrat800} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={montserrat700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={inter400} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content={site.nom} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="LR Solutions — Votre argent est dehors ? On passe à l’action." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline type="application/ld+json" set:html={jsonLdTexte} />
+    <script is:inline>document.documentElement.classList.add("js");</script>
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#contenu" class="sr-only-focusable fixed top-3 left-3 z-[60] rounded-full bg-vert-900 px-5 py-3 font-titre font-semibold text-creme-50">
+      Aller au contenu
+    </a>
+    <Header />
+    <main id="contenu" class="flex-1" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <MobileActionBar />
+
+    <script>
+      // Apparition douce des blocs .reveal au défilement
+      const els = document.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const io = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("is-visible");
+                io.unobserve(e.target);
+              }
+            }),
+          { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add("is-visible"));
+      }
+    </script>
+  </body>
+</html>

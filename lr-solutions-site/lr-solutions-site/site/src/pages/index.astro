@@ -1,0 +1,95 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import ProcessSchema from "../components/ProcessSchema.astro";
+import ServiceCards from "../components/ServiceCards.astro";
+import SectorCards from "../components/SectorCards.astro";
+import ValuesBand from "../components/ValuesBand.astro";
+import CtaBand from "../components/CtaBand.astro";
+import ServiceBadge from "../components/ServiceBadge.astro";
+import Icon from "../components/Icon.astro";
+---
+
+<BaseLayout
+  title="Recouvrement de factures impayées · LR Solutions"
+  description="Factures impayées ? Je prends en charge votre recouvrement amiable de A à Z : relances, échéanciers, encaissement. Île-de-France & à distance."
+>
+  <Hero />
+
+  <!-- Brève description -->
+  <section class="section bg-creme-100" aria-labelledby="titre-description">
+    <div class="container-site grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+      <div class="reveal">
+        <h2 id="titre-description">Le recouvrement, sans y perdre votre temps ni vos clients</h2>
+        <span class="filet mt-6"></span>
+      </div>
+      <div class="reveal space-y-4 text-lg text-texte-doux">
+        <p>Relancer un client qui ne paie pas, c'est du temps, de l'énergie et parfois de la gêne. C'est aussi de la trésorerie qui ne rentre pas.</p>
+        <p class="text-texte">
+          Je m'occupe de vos factures impayées à votre place : je relance, je négocie, je mets en place des échéanciers et je suis chaque dossier jusqu'à l'encaissement. Vous gardez la main sur les décisions, je m'occupe du reste.
+        </p>
+        <p>J'accompagne les entreprises, TPE, PME, artisans, professions libérales et indépendants, en Île-de-France et partout en France à distance.</p>
+        <ServiceBadge class="!mt-8" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Grand schéma -->
+  <section class="section bg-creme-50" aria-labelledby="titre-schema">
+    <div class="container-site">
+      <div class="reveal mx-auto max-w-2xl text-center">
+        <h2 id="titre-schema">Comment ça se passe ?</h2>
+        <span class="filet mx-auto mt-6"></span>
+        <p class="chapo mx-auto mt-6">Un parcours clair, en 5 étapes. Vous savez à tout moment où en est votre dossier.</p>
+      </div>
+      <div class="mt-12 lg:mt-16">
+        <ProcessSchema />
+      </div>
+      <div class="reveal mt-12 flex flex-col items-center gap-6 text-center lg:mt-16">
+        <div class="flex w-full max-w-3xl items-center gap-4 sm:gap-6">
+          <span class="h-px flex-1 bg-or-500/60" aria-hidden="true"></span>
+          <p class="font-titre text-[0.8125rem] font-semibold tracking-[0.12em] text-vert-900 uppercase sm:text-sm">
+            À chaque étape, je vous tiens informé(e) : <span class="text-or-700">un suivi régulier et transparent.</span>
+          </p>
+          <span class="h-px flex-1 bg-or-500/60" aria-hidden="true"></span>
+        </div>
+        <a href="/comment-ca-marche" class="group inline-flex items-center gap-2 font-titre font-semibold text-vert-900 hover:text-or-700">
+          Voir le détail de chaque étape
+          <Icon name="arrow-right" size={18} strokeWidth={2} class="transition-transform group-hover:translate-x-1" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ce que je prends en charge -->
+  <section class="section bg-creme-100" aria-labelledby="titre-services">
+    <div class="container-site">
+      <div class="reveal max-w-2xl">
+        <h2 id="titre-services">Ce que je prends en charge</h2>
+        <span class="filet mt-6"></span>
+      </div>
+      <div class="mt-10 lg:mt-12">
+        <ServiceCards />
+      </div>
+    </div>
+  </section>
+
+  <!-- Pour qui ? -->
+  <section class="section bg-creme-50" aria-labelledby="titre-secteurs">
+    <div class="container-site">
+      <div class="reveal max-w-2xl">
+        <p class="surtitre">Pour qui ?</p>
+        <h2 id="titre-secteurs" class="mt-4">J'interviens dans votre secteur</h2>
+        <span class="filet mt-6"></span>
+        <p class="chapo mt-6">Chaque métier a ses impayés et ses codes. J'adapte ma façon de relancer à votre activité et à vos clients.</p>
+      </div>
+      <div class="mt-10 lg:mt-12">
+        <SectorCards />
+      </div>
+    </div>
+  </section>
+
+  <ValuesBand />
+
+  <CtaBand />
+</BaseLayout>

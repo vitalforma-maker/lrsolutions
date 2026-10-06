@@ -1,0 +1,22 @@
+---
+/** Ligne de badges des visuels Instagram : zone + cibles. */
+import Icon from "./Icon.astro";
+import { site } from "../data/site";
+
+interface Props {
+  sombre?: boolean;
+  class?: string;
+}
+const { sombre = false, class: className } = Astro.props;
+---
+
+<ul class:list={["flex flex-col gap-3 text-[0.9375rem] sm:flex-row sm:items-center sm:gap-0", sombre ? "text-creme-50/90" : "text-texte", className]}>
+  <li class="flex items-center gap-3 sm:pr-6">
+    <Icon name="map-pin" size={22} class={sombre ? "text-or-300" : "text-vert-900"} />
+    {site.zone}
+  </li>
+  <li class:list={["flex items-center gap-3 sm:border-l sm:pl-6", sombre ? "border-or-300/40" : "border-or-500/50"]}>
+    <Icon name="users" size={22} class={sombre ? "text-or-300" : "text-vert-900"} />
+    {site.cibles}
+  </li>
+</ul>

@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Todo from "../components/Todo.astro";
+import { site, telHref, mailHref } from "../data/site";
+
+const fil = [{ nom: "Mentions légales", url: "/mentions-legales" }];
+const { legal, gerante } = site;
+---
+
+<BaseLayout title="Mentions légales · LR Solutions" description="Mentions légales du site LR Solutions, recouvrement amiable de créances." fil={fil}>
+  <PageHeader titre="Mentions légales" fil={fil} />
+
+  <section class="bg-creme-50 py-12 md:py-16">
+    <div class="container-site">
+      <div class="prose-legale max-w-3xl">
+        <h2 class="!mt-0">Éditeur du site</h2>
+        <p>
+          {site.nom} — <Todo text={legal.formeJuridique} /><br />
+          Représentée par {gerante.prenom} <Todo text={gerante.nom} />, <Todo text={gerante.qualite} /><br />
+          Siège : <Todo text={legal.adresse} /><br />
+          SIRET : <Todo text={legal.siret} /> — RCS/RNE : <Todo text={legal.rcs} /><br />
+          TVA intracommunautaire : <Todo text={legal.tva} /><br />
+          Téléphone : {telHref ? <a href={telHref} class="lien">{site.telephone}</a> : <Todo text={site.telephone} />} — E-mail : {
+            mailHref ? <a href={mailHref} class="lien">{site.email}</a> : <Todo text={site.email} />
+          }<br />
+          Directrice de la publication : {gerante.prenom} <Todo text={gerante.nom} />
+        </p>
+
+        <h2>Activité réglementée</h2>
+        <p>Recouvrement amiable de créances pour le compte d'autrui (articles R124-1 et suivants du Code des procédures civiles d'exécution).</p>
+        <p>
+          Assurance responsabilité civile professionnelle : <Todo text={legal.assureurRcPro} />, contrat n° <Todo text={legal.numeroContratRcPro} />.<br />
+          Compte bancaire dédié aux fonds encaissés pour le compte des clients : <Todo text={legal.banqueCompteDedie} />.<br />
+          Déclaration effectuée auprès du procureur de la République près le tribunal judiciaire de <Todo text={legal.tribunalDeclaration} />.
+        </p>
+
+        <h2>Hébergement</h2>
+        <p>
+          {legal.hebergeur.nom}, {legal.hebergeur.adresse} — <a href={legal.hebergeur.site} class="lien" target="_blank" rel="noopener noreferrer">vercel.com</a>
+          {legal.hebergeur.adresseAVerifier && <> <Todo text="[À VÉRIFIER au moment de la mise en ligne]" /></>}
+        </p>
+
+        <h2>Propriété intellectuelle</h2>
+        <p>L'ensemble des contenus (textes, logo, visuels) est la propriété de LR Solutions. Toute reproduction sans autorisation est interdite.</p>
+
+        <h2>Données personnelles</h2>
+        <p>Le traitement des données transmises via le formulaire de contact est détaillé dans la <a href="/politique-de-confidentialite" class="lien">politique de confidentialité</a>.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

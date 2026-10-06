@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Todo from "../components/Todo.astro";
+import { site, mailHref } from "../data/site";
+
+const fil = [{ nom: "Politique de confidentialité", url: "/politique-de-confidentialite" }];
+---
+
+<BaseLayout
+  title="Politique de confidentialité · LR Solutions"
+  description="Comment LR Solutions collecte, utilise et protège les données personnelles transmises via le site."
+  fil={fil}
+>
+  <PageHeader titre="Politique de confidentialité" fil={fil} />
+
+  <section class="bg-creme-50 py-12 md:py-16">
+    <div class="container-site">
+      <div class="prose-legale max-w-3xl">
+        <h2 class="!mt-0">1. Responsable du traitement</h2>
+        <p>
+          {site.nom}, {site.gerante.prenom} <Todo text={site.gerante.nom} />, {mailHref ? <a href={mailHref} class="lien">{site.email}</a> : <Todo text={site.email} />}.
+        </p>
+
+        <h2>2. Données collectées via le site</h2>
+        <p>Nom, société, e-mail, téléphone, secteur, informations sur les impayés saisies dans le message.</p>
+
+        <h2>3. Finalité et base légale</h2>
+        <p>
+          <strong>Finalité :</strong> répondre aux demandes et établir une proposition.<br />
+          <strong>Base légale :</strong> mesures précontractuelles à la demande de la personne / intérêt légitime.
+        </p>
+
+        <h2>4. Destinataires</h2>
+        <p>
+          LR Solutions uniquement ; sous-traitants techniques : Web3Forms (acheminement du formulaire), Vercel (hébergement). Aucun transfert à des fins commerciales.
+        </p>
+
+        <h2>5. Durée de conservation</h2>
+        <p>3 ans après le dernier contact pour les prospects ; durées légales pour les clients.</p>
+
+        <h2>6. Données des débiteurs</h2>
+        <p>
+          Les données des débiteurs sont traitées dans le cadre des missions, pas via le site : elles sont traitées uniquement pour le recouvrement, conservées le temps de la mission puis selon les durées légales.
+        </p>
+
+        <h2>7. Vos droits</h2>
+        <p>
+          Vous disposez d'un droit d'accès, de rectification, d'effacement, d'opposition, de limitation et de portabilité de vos données, à exercer par e-mail à {
+            mailHref ? <a href={mailHref} class="lien">{site.email}</a> : <Todo text={site.email} />
+          }. Vous pouvez également introduire une réclamation auprès de la CNIL (<a href="https://www.cnil.fr" class="lien" target="_blank" rel="noopener noreferrer">cnil.fr</a>).
+        </p>
+
+        <h2>8. Cookies</h2>
+        <p>Le site n'utilise pas de cookies de suivi publicitaire.</p>
+
+        <h2>9. Transferts hors UE</h2>
+        <p>
+          Vercel (États-Unis) — encadrés par les clauses contractuelles types / Data Privacy Framework. <Todo text="[À VÉRIFIER]" />
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

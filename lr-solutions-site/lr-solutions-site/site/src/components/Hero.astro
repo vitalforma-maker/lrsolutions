@@ -1,0 +1,95 @@
+---
+import Icon from "./Icon.astro";
+import Photo from "./Photo.astro";
+import Todo from "./Todo.astro";
+import { site } from "../data/site";
+---
+
+<section class="relative isolate overflow-hidden bg-creme-50">
+  <!-- Mobile / tablette : photo en fond, très atténuée -->
+  <div class="absolute inset-0 -z-10 lg:hidden" aria-hidden="true">
+    <Photo nom="hero-bureau-factures" decorative eager class="h-full w-full" sizes="100vw" flouApercu={4} />
+    <div class="absolute inset-0 bg-gradient-to-b from-creme-50/85 via-creme-50/92 to-creme-50"></div>
+  </div>
+
+  <div class="container-site grid items-center gap-10 pt-8 pb-14 md:pt-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:pt-16 lg:pb-24">
+    <div class="relative">
+      <p class="surtitre flex items-center gap-3">
+        <span class="filet !w-8"></span>Experte recouvrement
+      </p>
+
+      <h1 class="mt-4 uppercase">
+        <span class="block text-[clamp(2.15rem,9vw,4.5rem)] leading-[1.02] whitespace-nowrap text-vert-900 lg:text-[clamp(3rem,5vw,4.25rem)]">Votre argent</span>
+        <span class="block text-[clamp(2.15rem,9vw,4.5rem)] leading-[1.02] whitespace-nowrap text-or-600 lg:text-[clamp(3rem,5vw,4.25rem)]">est dehors ?</span>
+      </h1>
+
+      <p class="bloc-action mt-5 font-titre font-extrabold text-creme-50 uppercase">
+        <span class="bloc-ligne bg-vert-900">On passe</span>
+        <span class="bloc-ligne ml-[1.4em] bg-or-500 text-vert-900">à l’action.</span>
+      </p>
+
+      <p class="mt-6 max-w-xl text-[1.0625rem] text-texte-doux md:text-lg">
+        Vos factures restent impayées et vous n’avez pas le temps de courir après ? Je prends en charge votre recouvrement amiable de A à Z, avec des relances fermes, professionnelles et respectueuses de vos relations clients.
+      </p>
+
+      <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <a href="/contact" class="btn btn-primaire">
+          Déposer un impayé
+          <Icon name="arrow-right" size={18} strokeWidth={2} class="btn-fleche" />
+        </a>
+        <a href="/comment-ca-marche" class="btn btn-secondaire">Comment ça marche</a>
+      </div>
+
+      <ul class="mt-8 grid gap-3 text-[0.9375rem] text-texte sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
+        <li class="flex items-center gap-3">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-beige-200 text-vert-900"><Icon name="clock" size={19} /></span>
+          <span>Réponse {site.delaiReponse}{site.delaiReponseAValider && <> <Todo text="[À VALIDER]" /></>}</span>
+        </li>
+        <li class="flex items-center gap-3">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-beige-200 text-vert-900"><Icon name="user" size={19} /></span>
+          <span>Une seule interlocutrice, du début à la fin</span>
+        </li>
+        <li class="flex items-center gap-3">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-beige-200 text-vert-900"><Icon name="map-pin" size={19} /></span>
+          <span>{site.zone}</span>
+        </li>
+      </ul>
+
+      <p class="mt-8 lg:hidden"><span class="manuscrit">Une trésorerie saine, des projets qui avancent.</span></p>
+    </div>
+
+    <!-- Desktop : photo encadrée -->
+    <div class="relative hidden lg:block">
+      <div class="relative mx-auto aspect-[4/5] w-full max-w-[480px] overflow-hidden rounded-[28px] bg-vert-900 shadow-[0_30px_60px_rgba(41,52,46,0.18)]">
+        <Photo nom="hero-bureau-factures" eager class="absolute inset-0 h-full w-full" sizes="480px" flouApercu={5} />
+        <div class="absolute inset-0 bg-gradient-to-t from-vert-900 via-vert-900/55 to-vert-900/20"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-or-500/25 via-transparent to-transparent mix-blend-soft-light"></div>
+        <svg class="absolute top-8 right-8 h-10 w-10 text-or-300" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.6 5.4 11.4 12 12-6.6.6-11.4 5.4-12 12-.6-6.6-5.4-11.4-12-12C6.6 11.4 11.4 6.6 12 0Z" fill="currentColor" /></svg>
+        <div class="absolute inset-x-8 bottom-8 text-creme-50">
+          <p class="font-titre text-xs font-medium tracking-[0.3em] text-or-300 uppercase">{site.baseline}</p>
+          <p class="mt-4 font-titre text-2xl leading-snug font-bold">Des clients relancés,<br /><span class="text-or-300">pas inquiétés.</span></p>
+        </div>
+      </div>
+      <p class="absolute -top-7 -left-8 rotate-[-4deg] rounded-2xl bg-creme-50 px-6 py-4 shadow-carte">
+        <span class="manuscrit !text-[1.65rem]">Une trésorerie saine,<br />des projets qui avancent.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bloc-action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    font-size: clamp(1.6rem, 6.5vw, 2.6rem);
+    line-height: 1;
+    letter-spacing: -0.005em;
+  }
+  .bloc-ligne {
+    display: inline-block;
+    padding: 0.28em 0.5em 0.24em;
+    border-radius: 6px;
+  }
+</style>

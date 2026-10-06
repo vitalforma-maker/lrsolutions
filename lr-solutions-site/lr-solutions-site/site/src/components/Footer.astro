@@ -1,0 +1,87 @@
+---
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import Todo from "./Todo.astro";
+import { navigation } from "../data/navigation";
+import { secteurs } from "../data/secteurs";
+import { site, telHref, mailHref, hideTodos, isTodo } from "../data/site";
+
+const annee = 2026;
+const assurance = `${site.legal.assureurRcPro}`;
+---
+
+<footer class="on-dark bg-vert-900 text-creme-50">
+  <div class="container-site grid gap-10 py-14 md:grid-cols-2 md:py-16 lg:grid-cols-[1.3fr_1fr_1.2fr_1.2fr] lg:gap-12">
+    <div>
+      <a href="/" class="inline-block rounded-2xl bg-creme-50 px-4 py-3" aria-label="LR Solutions — accueil">
+        <Logo height={56} class="h-14 w-auto" loading="lazy" />
+      </a>
+      <p class="mt-5 font-titre text-xs font-medium tracking-[0.3em] text-or-300 uppercase">{site.sousTitre}</p>
+      <p class="mt-2 text-[0.9375rem] text-creme-50/85">{site.baseline}</p>
+    </div>
+
+    <nav aria-label="Pied de page — navigation">
+      <h2 class="font-titre text-sm font-semibold tracking-[0.2em] !text-or-300 uppercase">Navigation</h2>
+      <ul class="mt-4 space-y-2 text-[0.9375rem]">
+        {navigation.map((l) => <li><a href={l.href} class="text-creme-50/90 hover:text-or-300">{l.label}</a></li>)}
+        <li><a href="/mentions-legales" class="text-creme-50/90 hover:text-or-300">Mentions légales</a></li>
+        <li><a href="/politique-de-confidentialite" class="text-creme-50/90 hover:text-or-300">Politique de confidentialité</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-label="Pied de page — secteurs">
+      <h2 class="font-titre text-sm font-semibold tracking-[0.2em] !text-or-300 uppercase">Secteurs</h2>
+      <ul class="mt-4 space-y-2 text-[0.9375rem]">
+        {secteurs.map((s) => <li><a href={`/secteurs#${s.slug}`} class="text-creme-50/90 hover:text-or-300">{s.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="font-titre text-sm font-semibold tracking-[0.2em] !text-or-300 uppercase">Contact</h2>
+      <ul class="mt-4 space-y-3 text-[0.9375rem]">
+        {
+          (telHref || !hideTodos) && (
+            <li class="flex items-start gap-3">
+              <Icon name="phone" size={18} class="mt-1 shrink-0 text-or-300" />
+              {telHref ? <a href={telHref} class="hover:text-or-300">{site.telephone}</a> : <Todo text={site.telephone} />}
+            </li>
+          )
+        }
+        {
+          (mailHref || !hideTodos) && (
+            <li class="flex items-start gap-3">
+              <Icon name="mail" size={18} class="mt-1 shrink-0 text-or-300" />
+              {mailHref ? <a href={mailHref} class="break-all hover:text-or-300">{site.email}</a> : <Todo text={site.email} />}
+            </li>
+          )
+        }
+        <li class="flex items-start gap-3">
+          <Icon name="instagram" size={18} class="mt-1 shrink-0 text-or-300" />
+          <a href={site.instagram} target="_blank" rel="noopener noreferrer" class="hover:text-or-300">
+            {site.instagramHandle}<span class="sr-only"> (nouvel onglet)</span>
+          </a>
+        </li>
+        <li class="flex items-start gap-3">
+          <Icon name="map-pin" size={18} class="mt-1 shrink-0 text-or-300" />
+          <span>{site.zone}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-vert-700">
+    <div class="container-site flex flex-col gap-2 pt-6 pb-24 text-sm text-creme-50/80 md:pb-6 md:flex-row md:flex-wrap md:items-center md:justify-between">
+      <p>
+        © {annee} {site.nom} · <a href="/mentions-legales" class="underline-offset-2 hover:text-or-300 hover:underline">Mentions légales</a> ·{" "}
+        <a href="/politique-de-confidentialite" class="underline-offset-2 hover:text-or-300 hover:underline">Confidentialité</a>
+      </p>
+      {
+        (!isTodo(assurance) || !hideTodos) && (
+          <p>
+            Recouvrement amiable de créances · Assurance responsabilité civile professionnelle : <Todo text={assurance} />
+          </p>
+        )
+      }
+    </div>
+  </div>
+</footer>

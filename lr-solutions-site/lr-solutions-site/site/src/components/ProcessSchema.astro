@@ -1,0 +1,131 @@
+---
+/**
+ * Schéma du processus en 5 étapes (HTML/CSS).
+ * ≥ 1024 px : horizontal, ligne or ; étape 5 décalée avec un trait pointillé.
+ * < 1024 px : timeline verticale, ligne or à gauche.
+ */
+import Icon from "./Icon.astro";
+import Todo from "./Todo.astro";
+import { etapes } from "../data/etapes";
+
+interface Props {
+  titreNiveau?: "h3" | "h4";
+}
+const { titreNiveau = "h3" } = Astro.props;
+const Titre = titreNiveau;
+---
+
+<ol class="schema reveal relative grid gap-0 lg:grid-cols-5 lg:gap-6">
+  {
+    etapes.map((e) => (
+      <li class:list={["etape relative pb-10 pl-[4.5rem] last:pb-0 lg:pb-0 lg:pl-0 lg:text-center", { "etape-option lg:pt-14": e.optionnelle }]}>
+        <span
+          class:list={[
+            "cercle absolute top-0 left-0 z-10 flex h-14 w-14 items-center justify-center rounded-full font-titre text-xl font-extrabold lg:relative lg:mx-auto",
+            e.optionnelle ? "border-2 border-dashed border-or-500 bg-creme-50 text-or-700" : "bg-or-500 text-vert-900",
+          ]}
+          aria-hidden="true"
+        >
+          {e.numero}
+        </span>
+        <div class="lg:mt-5">
+          {e.optionnelle && (
+            <span class="mb-2 inline-block rounded-full bg-beige-200 px-3 py-0.5 font-titre text-[0.6875rem] font-semibold tracking-[0.18em] text-vert-900 uppercase">
+              Si nécessaire
+            </span>
+          )}
+          <Titre class="flex items-start gap-2 text-[1.125rem] leading-snug lg:flex-col lg:items-center">
+            <Icon name={e.icon} size={22} class="mt-0.5 shrink-0 text-or-700 lg:mt-0 lg:mb-1" />
+            <span>
+              <span class="sr-only">Étape {e.numero} : </span>
+              {e.titre}
+            </span>
+          </Titre>
+          <p class="mt-2 text-[0.975rem] leading-relaxed text-texte-doux">
+            {e.texte}
+            {e.todo && (
+              <>
+                {" "}
+                <Todo text={e.todo} />
+              </>
+            )}
+          </p>
+          {e.citation && <p class="mt-2 font-titre text-sm font-semibold text-or-700">« {e.citation} »</p>}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  /* --- Mobile : timeline verticale --- */
+  .etape::before {
+    content: "";
+    position: absolute;
+    left: 27px;
+    top: 56px;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-or-500);
+    transform-origin: top;
+  }
+  .etape:last-child::before {
+    display: none;
+  }
+  /* trait pointillé vers l'étape optionnelle */
+  .etape:nth-last-child(2)::before {
+    background: none;
+    border-left: 2px dashed var(--color-or-500);
+  }
+
+  /* --- Desktop : horizontal --- */
+  @media (min-width: 1024px) {
+    .etape::before {
+      left: calc(50% + 36px);
+      top: 27px;
+      bottom: auto;
+      width: calc(100% + 1.5rem - 72px);
+      height: 2px;
+      transform-origin: left;
+    }
+    .etape:nth-last-child(2)::before {
+      width: calc(100% + 1.5rem - 36px);
+      height: 0;
+      border-left: none;
+      border-top: 2px dashed var(--color-or-500);
+    }
+    .etape-option::after {
+      content: "";
+      position: absolute;
+      left: calc(50% - 1px);
+      top: 28px;
+      height: 22px;
+      border-left: 2px dashed var(--color-or-500);
+    }
+  }
+
+  /* Dessin progressif de la ligne à l'apparition */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .schema .etape::before {
+      transform: scale(1, 0);
+      transition: transform 0.5s ease-out;
+    }
+    @media (min-width: 1024px) {
+      :global(.js) .schema .etape::before {
+        transform: scale(0, 1);
+      }
+    }
+    :global(.js) .schema:global(.is-visible) .etape::before {
+      transform: none;
+    }
+    .etape:nth-child(2)::before {
+      transition-delay: 0.15s;
+    }
+    .etape:nth-child(3)::before {
+      transition-delay: 0.3s;
+    }
+    .etape:nth-child(4)::before {
+      transition-delay: 0.45s;
+    }
+  }
+</style>
